@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Effect with Korean Characters</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #ffffff; /* Latar belakang putih */
+            font-family: 'Courier New', monospace;
+        }
+
+        .matrix {
+            position: absolute;
+            color: #000000; /* Warna teks hitam */
+            font-size: 24px;
+            white-space: nowrap;
+        }
+
+        .column {
+            position: absolute;
+            top: -1000px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Daftar karakter Korea untuk matrix
+        const chars = "가나다라마바사아자차카타파하" + 
+                      "거너더러머버서어저처커터퍼허" + 
+                      "기니디리미비시이지치키티피히" +
+                      "고노도로모보소오조초코토포호" + 
+                      "구누두루무부수우주추쿠투푸후";
+
+        // Ukuran font
+        const fontSize = 24;
+
+        // Membuat array untuk posisi karakter
+        const columns = Math.floor(window.innerWidth / fontSize);
+        const rows = Math.floor(window.innerHeight / fontSize);
+
+        // Membuat array untuk menyimpan posisi y tiap kolom
+        const yPositions = Array(columns).fill(0);
+
+        // Membuat elemen kolom untuk setiap kolom
+        const columnsArray = [];
+        for (let i = 0; i < columns; i++) {
+            const column = document.createElement('div');
+            column.className = 'column';
+            column.style.left = `${i * fontSize}px`;
+            document.body.appendChild(column);
+            columnsArray.push(column);
+        }
+
+        // Fungsi untuk memilih karakter acak
+        function getRandomChar() {
+            return chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        // Fungsi untuk memperbarui efek matrix
+        function updateMatrix() {
+            columnsArray.forEach((column, index) => {
+                let randomChar = getRandomChar();
+                let charNode = document.createTextNode(randomChar);
+                
+                // Menambahkan karakter baru di atas setiap kolom
+                if (column.childNodes.length > rows) {
+                    column.removeChild(column.firstChild);
+                }
+
+                column.insertBefore(charNode, column.firstChild);
+
+                // Perbarui posisi y untuk efek jatuh
+                yPositions[index] += fontSize;
+                if (yPositions[index] > window.innerHeight) {
+                    yPositions[index] = -fontSize;
+                }
+            });
+
+            requestAnimationFrame(updateMatrix); // Memanggil update secara berulang
+        }
+
+        updateMatrix(); // Menjalankan efek matrix
+    </script>
+</body>
+</html>
